@@ -1,0 +1,38 @@
+maxamps= int (input(f'Enter max number of Amplitudes'))
+maxampssteps= int (input(f'Enter max number of time steps in the lagged Amplitude')) 
+time = [] #Enter the time vector
+H1amp= [] #Enter the amplitude values of the earthquake component in X.
+H2amp = [] # Enter the amplitude values of the earthquake component in Y.
+Vamp= [] #Enter the amplitude values of the earthquake component in Z.
+
+coordinate_1x = []
+coordinate_1y = []
+count = 0
+timeno = 0 #Variable used in While loop to increase in ascending order at each input value from the time list.
+serialno= 0 #Variable used after breaking the While loop and increases monotonically to reset the value of the count variable.
+Amp = 1 #Amplitude sequence is define through this variable, the user is advised to enter the numeric value of first amplitude in the sequence. Amp =1 is chosen by default, but the user could change as necessary.
+ampcount = 1 #This variable counts the number of amplitudes in the whole model, always = 1.
+while ampcount < maxamps:
+    appendFile = open('H1_COMPO_StraightTunnelAmps.txt', 'a')
+    appendFile.write ('\n')
+    appendFile.write (f"mdb.models['Model-1'].TabularAmplitude(name='Amp-{Amp}', timeSpan=TOTAL, smooth=SOLVER_DEFAULT, data=(")
+
+    while count < maxampssteps:
+     coordinate_1x = time[timeno]
+     coordinate_1y = H1amp[count] #The variable H1amp is subject to change to H2amp or Vamp as necessary
+     #coordinate_1y = settlement[count]
+     appendFile.write (f"({coordinate_1x}, {coordinate_1y}), ")
+     count += 1
+     timeno += 1
+     if count > maxampssteps:
+        break
+    Amp += 1
+    ampcount +=1
+    timeno = 0
+    serialno += 1
+    count = serialno
+    maxampssteps+= 1
+    if ampcount > maxamps:
+        break
+    appendFile.close()
+
